@@ -1,45 +1,56 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useContext } from 'react';
 import './App.css';
-import AdminProductsPage from './pages/AdminProductsPage';
-import AuthPage from './pages/AuthPage';
-import BillingPage from './pages/BillingPage';
-import NotFoundPage from './pages/NotFoundPage';
-import UserProductsPage from './pages/UserProductsPage';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import NewProductPage from './pages/NewProductPage';
-import EditProductPage from './pages/EditProductPage';
 import MainLayout from './components/Layout/MainLayout';
+import AdminProductsPage from './pages/AdminProductsPage';
+import BillingPage from './pages/BillingPage';
+import EditProductPage from './pages/EditProductPage';
+import NewProductPage from './pages/NewProductPage';
+import UserProductsPage from './pages/UserProductsPage';
+import ProtectedRoute from './routes/ProtectedRoute';
+import NotFoundPage from './pages/NotFoundPage';
 import SideLayout from './components/Layout/SideLayout';
+import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
+import AuthContext from './components/store/auth-context';
 
 const App: FC = (): ReactElement => {
-  const logged = false;
+  const { isLoggedIn } = useContext(AuthContext);
+
   return (
     <BrowserRouter>
       <MainLayout>
-        {logged ? (
-          <SideLayout>
-            <Switch>
-              <Redirect from="/" to="/products" exact />
+        <Switch>
+          <Redirect from="/" to={isLoggedIn ? '/products' : '/sign-in'} exact />
+          <Route path="/sign-in" component={SignInPage} exact />
+          <Route path="/sign-up" component={SignUpPage} exact />
+          <ProtectedRoute
+            exact
+            path={[
+              '/products',
+              '/billing',
+              '/admin/products',
+              '/admin/products/new',
+              '/admin/products/:productId/edit',
+            ]}
+          >
+            <SideLayout>
               <Route path="/products" component={UserProductsPage} />
               <Route path="/billing" component={BillingPage} />
-              <Route path="/admin/products" component={AdminProductsPage} />
+              <Route
+                path="/admin/products"
+                component={AdminProductsPage}
+                exact
+              />
               <Route path="/admin/products/new" component={NewProductPage} />
               <Route
                 path="/admin/products/:productId/edit"
                 component={EditProductPage}
               />
-              <Route path="*" component={NotFoundPage} />
-            </Switch>
-          </SideLayout>
-        ) : (
-          <>
-            <Switch>
-              <Redirect from="/" to="/auth" exact />
-              <Route path="/auth" component={AuthPage} exact />
-              <Route path="*" component={NotFoundPage} />
-            </Switch>
-          </>
-        )}
+            </SideLayout>
+          </ProtectedRoute>
+          <Route path="*" component={NotFoundPage} />
+        </Switch>
       </MainLayout>
     </BrowserRouter>
   );
