@@ -1,7 +1,8 @@
+import { Typography } from '@mui/material';
 import { FC, ReactElement } from 'react';
 
 const UserProducts: FC = (): ReactElement => {
-  return <h1>User Products</h1>;
+  return <Typography variant="h4">User Products</Typography>;
 };
 
 export default UserProducts;

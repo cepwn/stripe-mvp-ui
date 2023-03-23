@@ -1,7 +1,8 @@
+import { Typography } from '@mui/material';
 import { FC, ReactElement } from 'react';
 
 const AdminProducts: FC = (): ReactElement => {
-  return <h1>Admin Products</h1>;
+  return <Typography variant="h4">Admin Products</Typography>;
 };
 
 export default AdminProducts;

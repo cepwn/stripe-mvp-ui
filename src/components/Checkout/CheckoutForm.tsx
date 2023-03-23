@@ -1,7 +1,8 @@
+import { Typography } from '@mui/material';
 import { FC, ReactElement } from 'react';
 
 const CheckoutForm: FC = (): ReactElement => {
-  return <h1>CheckoutForm</h1>;
+  return <Typography variant="h4">CheckoutForm</Typography>;
 };
 
 export default CheckoutForm;

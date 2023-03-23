@@ -5,7 +5,7 @@ const MainLayout: FC = (props): ReactElement => {
   return (
     <>
       <MainNavigation />
-      <main>{props.children}</main>
+      {props.children}
     </>
   );
 };

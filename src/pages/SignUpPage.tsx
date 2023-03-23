@@ -1,13 +1,8 @@
 import { FC, ReactElement } from 'react';
-import AuthForm from '../components/Auth/AuthForm';
+import AuthForm, { AuthMode } from '../components/Auth/AuthForm';
 
 const SignUpPage: FC = (): ReactElement => {
-  return (
-    <>
-      <h1>SignUp</h1>
-      <AuthForm />
-    </>
-  );
+  return <AuthForm authMode={AuthMode.SignUp} />;
 };
 
 export default SignUpPage;

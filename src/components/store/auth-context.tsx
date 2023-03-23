@@ -5,8 +5,7 @@ import React, {
   FC,
   ReactElement,
 } from 'react';
-import jwt_decode from 'jwt-decode';
-import { getRemainingTimeMillis } from '../../util/date';
+import { getTokenRemainingTimeMillis } from '../../util/jwt';
 
 let logoutTimer: NodeJS.Timeout;
 
@@ -24,7 +23,7 @@ const AuthContext = React.createContext<AuthContextObj>({
   logout: () => undefined,
 });
 
-const retrieveTokenData = (): {
+const getLocalTokenData = (): {
   token: string;
   remainingTimeMillis: number;
 } => {
@@ -34,14 +33,7 @@ const retrieveTokenData = (): {
     return { token: '', remainingTimeMillis: 0 };
   }
 
-  const tokenPayload = jwt_decode<{
-    iat: number;
-    exp: number;
-  }>(token);
-
-  const { exp } = tokenPayload;
-
-  const remainingTimeMillis = getRemainingTimeMillis(exp);
+  const remainingTimeMillis = getTokenRemainingTimeMillis(token);
 
   if (remainingTimeMillis <= 0) {
     localStorage.removeItem('token');
@@ -55,9 +47,10 @@ const retrieveTokenData = (): {
 };
 
 export const AuthContextProvider: FC = (props): ReactElement => {
-  const tokenData = retrieveTokenData();
+  const tokenData = getLocalTokenData();
+  const { token: storedToken } = tokenData;
 
-  const [token, setToken] = useState<string>(tokenData.token);
+  const [token, setToken] = useState<string>(storedToken);
 
   const isLoggedIn = !!token;
 
@@ -77,15 +70,10 @@ export const AuthContextProvider: FC = (props): ReactElement => {
   };
 
   useEffect(() => {
-    if (tokenData) {
-      // FIXME: REMOVE THIS LOG
-      console.log(
-        'setTimeout for token with remainingTimeMillis:',
-        tokenData.remainingTimeMillis,
-      );
+    if (storedToken) {
       logoutTimer = setTimeout(logoutHandler, tokenData.remainingTimeMillis);
     }
-  }, [tokenData, logoutHandler]);
+  }, [storedToken, logoutHandler]);
 
   const contextValue: AuthContextObj = {
     token,
