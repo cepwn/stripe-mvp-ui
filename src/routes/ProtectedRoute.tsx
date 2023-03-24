@@ -1,6 +1,6 @@
 import { FC, ReactElement, useContext } from 'react';
 import { Route, RouteProps } from 'react-router-dom';
-import AuthContext from '../components/store/auth-context';
+import AuthContext from '../store/auth-context';
 import UnauthorizedPage from '../pages/UnathorizedPage';
 
 const ProtectedRoute: FC<RouteProps> = ({

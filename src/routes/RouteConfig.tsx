@@ -3,7 +3,7 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import MainLayout from '../components/Layout/MainLayout';
 import NoNavLayout from '../components/Layout/NoNavLayout';
 import SideLayout from '../components/Layout/SideLayout';
-import AuthContext from '../components/store/auth-context';
+import AuthContext from '../store/auth-context';
 import AdminProductsPage from '../pages/AdminProductsPage';
 import BillingPage from '../pages/BillingPage';
 import EditProductPage from '../pages/EditProductPage';

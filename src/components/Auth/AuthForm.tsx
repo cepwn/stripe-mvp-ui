@@ -8,12 +8,15 @@ import {
   TextField,
   Button,
   Link,
+  Alert,
 } from '@mui/material';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { FC, ReactElement, useContext } from 'react';
+import { FC, ReactElement, useContext, useState } from 'react';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import AuthContext from '../store/auth-context';
+import AuthContext from '../../store/auth-context';
 import { getTokenRemainingTimeMillis } from '../../util/jwt';
+import useInput from '../../hooks/use-input';
+import axios from 'axios';
 
 export enum AuthMode {
   SingIn = 'signin',
@@ -23,10 +26,52 @@ export enum AuthMode {
 const AuthForm: FC<{ authMode: AuthMode }> = ({ authMode }): ReactElement => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
+  const [formErrorText, setFormErrorText] = useState<string>('');
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const {
+    isValid: emailIsValid,
+    hasError: emailHasError,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    submitHandler: emailSubmitHandler,
+    reset: resetEmailInput,
+  } = useInput((value) =>
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      value,
+    ),
+  );
+
+  const {
+    isValid: passwordIsValid,
+    hasError: passwordHasError,
+    valueChangeHandler: passwordChangeHandler,
+    inputBlurHandler: passwordBlurHandler,
+    submitHandler: passwordSubmitHandler,
+    reset: resetPasswordInput,
+  } = useInput(
+    (value) =>
+      /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(value) &&
+      value.length > 7 &&
+      value.length < 21,
+  );
+
+  let formIsValid = false;
+
+  if (passwordIsValid && emailIsValid) {
+    formIsValid = true;
+  }
+
+  const formSubmissionHandler = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const formData = new FormData(event.currentTarget);
+
+    if (!formIsValid) {
+      emailSubmitHandler();
+      passwordSubmitHandler();
+      return;
+    }
 
     let url;
     if (authMode === AuthMode.SingIn) {
@@ -36,31 +81,36 @@ const AuthForm: FC<{ authMode: AuthMode }> = ({ authMode }): ReactElement => {
     }
 
     try {
-      // TODO: use axios instead of fetch
-      const response = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify({
-          email: data.get('email'),
-          password: data.get('password'),
-          returnSecureToken: true,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        url,
+        {
+          email: formData.get('email'),
+          password: formData.get('password'),
         },
-      });
-
-      if (response.ok) {
-        const { jwt: token } = await response.json();
-        const remainingTimeMillis = getTokenRemainingTimeMillis(token);
-        authCtx.login(token, remainingTimeMillis);
-        history.replace('/');
-      } else {
-        // TODO: handle error
-        console.log('error: ', response);
-      }
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const { jwt: token } = await response.data;
+      const remainingTimeMillis = getTokenRemainingTimeMillis(token);
+      authCtx.login(token, remainingTimeMillis);
+      history.replace('/');
     } catch (e) {
-      // TODO: handle error
-      console.log('error: ', e);
+      if (axios.isAxiosError(e)) {
+        if (e.response?.status === 401) {
+          setFormErrorText('Invalid credentials');
+          resetPasswordInput();
+          resetEmailInput();
+        } else if (e.response?.status === 409) {
+          setFormErrorText('User already exists, sign in instead');
+          resetPasswordInput();
+          resetEmailInput();
+        } else {
+          setFormErrorText('Something went wrong');
+        }
+      }
     }
   };
 
@@ -81,7 +131,25 @@ const AuthForm: FC<{ authMode: AuthMode }> = ({ authMode }): ReactElement => {
         <Typography component="h1" variant="h5">
           {authMode === AuthMode.SingIn ? 'Sign in' : 'Sign up'}
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        {formErrorText && (
+          <Alert
+            severity="error"
+            sx={{
+              marginTop: 3,
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {formErrorText}
+          </Alert>
+        )}
+        <Box
+          component="form"
+          noValidate
+          onSubmit={formSubmissionHandler}
+          sx={{ mt: 3 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -91,6 +159,12 @@ const AuthForm: FC<{ authMode: AuthMode }> = ({ authMode }): ReactElement => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={emailChangeHandler}
+                onBlur={emailBlurHandler}
+                error={emailHasError}
+                helperText={
+                  emailHasError ? 'Please enter a valid email address.' : ''
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -102,6 +176,14 @@ const AuthForm: FC<{ authMode: AuthMode }> = ({ authMode }): ReactElement => {
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                onChange={passwordChangeHandler}
+                onBlur={passwordBlurHandler}
+                error={passwordHasError}
+                helperText={
+                  passwordHasError
+                    ? 'Password must be between 8 and 20 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character.'
+                    : ''
+                }
               />
             </Grid>
           </Grid>

@@ -2,7 +2,7 @@ import { Logout } from '@mui/icons-material';
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 import { FC, ReactElement, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import AuthContext from '../store/auth-context';
+import AuthContext from '../../store/auth-context';
 
 const MainNavigation: FC = (): ReactElement => {
   const authCtx = useContext(AuthContext);

@@ -5,7 +5,7 @@ import React, {
   FC,
   ReactElement,
 } from 'react';
-import { getTokenRemainingTimeMillis } from '../../util/jwt';
+import { getTokenRemainingTimeMillis } from '../util/jwt';
 
 let logoutTimer: NodeJS.Timeout;
 
