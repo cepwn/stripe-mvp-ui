@@ -1,4 +1,4 @@
-import { ChangeEvent, useReducer } from 'react';
+import { ChangeEvent, KeyboardEvent, useReducer } from 'react';
 
 type InputState = {
   value: string;
@@ -42,24 +42,28 @@ const inputStateReducer = (
 
 const useInput = (
   validateValue: (value: string) => boolean,
+  initialValue = '',
 ): {
+  value: string;
   isValid: boolean;
   hasError: boolean;
   valueChangeHandler: (event: ChangeEvent<HTMLInputElement>) => void;
   inputBlurHandler: () => void;
-  submitHandler: () => void;
+  keyDownHandler: (event: KeyboardEvent<HTMLInputElement>) => void;
   reset: () => void;
 } => {
-  const [inputState, dispatch] = useReducer(
-    inputStateReducer,
-    initialInputState,
-  );
+  const [inputState, dispatch] = useReducer(inputStateReducer, {
+    value: initialValue,
+    isTouched: false,
+  });
 
   const valueIsValid = validateValue(inputState.value);
   const hasError = !valueIsValid && inputState.isTouched;
 
-  const submitHandler = () => {
-    dispatch({ type: InputActionType.SUBMIT });
+  const keyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      dispatch({ type: InputActionType.SUBMIT });
+    }
   };
 
   const valueChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -75,11 +79,12 @@ const useInput = (
   };
 
   return {
+    value: inputState.value,
     isValid: valueIsValid,
     hasError,
     valueChangeHandler,
     inputBlurHandler,
-    submitHandler,
+    keyDownHandler,
     reset,
   };
 };

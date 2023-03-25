@@ -1,8 +1,8 @@
 import { FC, ReactElement } from 'react';
-import ProductForm from '../components/Products/ProductForm';
+import AddProduct from '../components/Products/AddProduct';
 
 const NewProductPage: FC = (): ReactElement => {
-  return <ProductForm />;
+  return <AddProduct />;
 };
 
 export default NewProductPage;

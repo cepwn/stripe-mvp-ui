@@ -1,11 +1,20 @@
 import { Logout } from '@mui/icons-material';
-import { AppBar, Button, Toolbar, Typography } from '@mui/material';
+import {
+  AppBar,
+  Box,
+  Button,
+  LinearProgress,
+  Toolbar,
+  Typography,
+} from '@mui/material';
 import { FC, ReactElement, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import AuthContext from '../../store/auth-context';
+import LoaderContext from '../../store/loader-context';
 
 const MainNavigation: FC = (): ReactElement => {
   const authCtx = useContext(AuthContext);
+  const loaderCtx = useContext(LoaderContext);
   const history = useHistory();
 
   const handleLogout = () => {
@@ -18,6 +27,13 @@ const MainNavigation: FC = (): ReactElement => {
       position="fixed"
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
+      <Box sx={{ width: '100%' }}>
+        {loaderCtx.isLoading ? (
+          <LinearProgress />
+        ) : (
+          <LinearProgress variant="determinate" value={100} />
+        )}
+      </Box>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Stripe MVP
