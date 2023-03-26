@@ -108,7 +108,7 @@ const UserProducts: FC = (): ReactElement => {
           </Grid>
         </Container>
       )}
-      {products.length > 0 && !loaderCtx.isLoading && (
+      {!loaderCtx.isLoading && (
         <UserProductsList
           products={products}
           intervalValue={intervalValue}

@@ -30,9 +30,9 @@ const MainNavigation: FC = (): ReactElement => {
     >
       <Box sx={{ width: '100%' }}>
         {loaderCtx.isLoading ? (
-          <LinearProgress color="secondary" />
+          <LinearProgress />
         ) : (
-          <LinearProgress variant="determinate" value={100} color="secondary" />
+          <LinearProgress variant="determinate" value={100} />
         )}
       </Box>
       <Toolbar>
@@ -42,7 +42,7 @@ const MainNavigation: FC = (): ReactElement => {
           component={Link}
           to="/"
         >
-          Emplicit
+          Stripe MVP
         </Typography>
         {authCtx.isLoggedIn && (
           <Button color="inherit" onClick={handleLogout} startIcon={<Logout />}>

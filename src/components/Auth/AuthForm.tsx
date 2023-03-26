@@ -65,7 +65,6 @@ const AuthForm: FC<{ authMode: AuthMode }> = ({ authMode }): ReactElement => {
     formIsValid = true;
   }
 
-  // TODO: add loading state
   const formSubmissionHandler = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
