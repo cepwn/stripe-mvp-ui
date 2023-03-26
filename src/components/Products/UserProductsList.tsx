@@ -13,20 +13,21 @@ import {
 } from '@mui/material';
 import StarIcon from '@mui/icons-material/StarBorder';
 import { FC, ReactElement } from 'react';
-import { AdminProduct } from './models/adminProduct';
+import { Product } from './models/product';
+import { Link } from 'react-router-dom';
 
 const UserProductsList: FC<{
-  adminProducts: AdminProduct[];
+  products: Product[];
   intervalValue: string;
   onIntervalChange: (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     value: string,
   ) => void;
-}> = ({ adminProducts, intervalValue, onIntervalChange }): ReactElement => {
+}> = ({ products, intervalValue, onIntervalChange }): ReactElement => {
   return (
     <>
       <Container disableGutters maxWidth="sm" component="main" sx={{ pb: 8 }}>
-        {adminProducts.length === 0 ? (
+        {products.length === 0 ? (
           <Typography
             variant="body1"
             align="center"
@@ -54,8 +55,8 @@ const UserProductsList: FC<{
       </Container>
       <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-end">
-          {adminProducts.length > 0 &&
-            adminProducts.map((product) => (
+          {products.length > 0 &&
+            products.map((product) => (
               // Enterprise card is full width at sm breakpoint
               <Grid item key={product.name} xs={12} md={4}>
                 <Card>
@@ -85,7 +86,7 @@ const UserProductsList: FC<{
                     >
                       <Typography
                         component="h2"
-                        variant="h3"
+                        variant="h4"
                         color="text.primary"
                       >
                         $
@@ -114,6 +115,12 @@ const UserProductsList: FC<{
                     <Button
                       fullWidth
                       variant={product.mostPopular ? 'contained' : 'outlined'}
+                      component={Link}
+                      to={`/prices/${
+                        intervalValue === 'monthly'
+                          ? product.monthlyPriceId
+                          : product.yearlyPriceId
+                      }/checkout`}
                     >
                       Get Started
                     </Button>

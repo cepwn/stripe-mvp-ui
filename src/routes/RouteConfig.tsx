@@ -13,6 +13,8 @@ import SignInPage from '../pages/SignInPage';
 import SignUpPage from '../pages/SignUpPage';
 import UserProductsPage from '../pages/UserProductsPage';
 import ProtectedRoute from './ProtectedRoute';
+import CheckoutPage from '../pages/CheckoutPage';
+import PaymentSuccessPage from '../pages/PaymentSuccessPage';
 
 const RouteConfig: FC = (): ReactElement => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -38,10 +40,12 @@ const RouteConfig: FC = (): ReactElement => {
               '/admin/products',
               '/admin/products/new',
               '/admin/products/:productId/edit',
+              '/prices/:priceId/checkout',
+              '/subscriptions/:subscriptionId/success',
             ]}
           >
             <SideLayout>
-              <Route path="/products" component={UserProductsPage} />
+              <Route path="/products" component={UserProductsPage} exact />
               <Route path="/billing" component={BillingPage} />
               <Route
                 path="/admin/products"
@@ -52,6 +56,16 @@ const RouteConfig: FC = (): ReactElement => {
               <Route
                 path="/admin/products/:productId/edit"
                 component={EditProductPage}
+              />
+              <Route
+                path="/prices/:priceId/checkout"
+                component={CheckoutPage}
+                exact
+              />
+              <Route
+                path="/subscriptions/:subscriptionId/success"
+                component={PaymentSuccessPage}
+                exact
               />
             </SideLayout>
           </ProtectedRoute>

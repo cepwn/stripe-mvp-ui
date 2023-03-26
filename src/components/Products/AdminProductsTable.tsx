@@ -10,15 +10,15 @@ import {
 } from '@mui/material';
 import { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
-import { AdminProduct } from './models/adminProduct';
+import { Product } from './models/product';
 
 const AdminProductsTable: FC<{
-  adminProducts: AdminProduct[];
+  products: Product[];
   onDeleteProduct: (productId: string) => void;
-}> = ({ adminProducts, onDeleteProduct }): ReactElement => {
+}> = ({ products, onDeleteProduct }): ReactElement => {
   return (
     <>
-      {adminProducts.length === 0 ? (
+      {products.length === 0 ? (
         <Typography variant="body1">
           No pricing plans, try adding some !
         </Typography>
@@ -35,24 +35,24 @@ const AdminProductsTable: FC<{
             </TableRow>
           </TableHead>
           <TableBody>
-            {adminProducts.map((adminProduct) => (
-              <TableRow key={adminProduct.id}>
-                <TableCell>{adminProduct.name}</TableCell>
-                <TableCell>${adminProduct.monthlyPriceAmount}/mo</TableCell>
-                <TableCell>${adminProduct.yearlyPriceAmount}/yr</TableCell>
-                <TableCell>{adminProduct.active ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{adminProduct.mostPopular ? 'Yes' : 'No'}</TableCell>
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>${product.monthlyPriceAmount}</TableCell>
+                <TableCell>${product.yearlyPriceAmount}</TableCell>
+                <TableCell>{product.active ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{product.mostPopular ? 'Yes' : 'No'}</TableCell>
                 <TableCell align="center">
                   <IconButton
                     color="primary"
                     component={Link}
-                    to={`/admin/products/${adminProduct.id}/edit`}
+                    to={`/admin/products/${product.id}/edit`}
                   >
                     <Edit />
                   </IconButton>
                   <IconButton
                     color="primary"
-                    onClick={() => onDeleteProduct(adminProduct.id)}
+                    onClick={() => onDeleteProduct(product.id)}
                   >
                     <Delete />
                   </IconButton>

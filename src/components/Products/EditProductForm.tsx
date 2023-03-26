@@ -11,13 +11,13 @@ import { FC, ReactElement, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import useInput from '../../hooks/use-input';
 import { ProductFormOnSubmitParams } from './EditProduct';
-import { AdminProduct } from './models/adminProduct';
+import { Product } from './models/product';
 
 const ProductForm: FC<{
-  adminProduct: AdminProduct;
+  product: Product;
   onSubmit: (params: ProductFormOnSubmitParams) => void;
   isLoading: boolean;
-}> = ({ adminProduct, onSubmit, isLoading }): ReactElement => {
+}> = ({ product, onSubmit, isLoading }): ReactElement => {
   const {
     name,
     features,
@@ -25,7 +25,7 @@ const ProductForm: FC<{
     mostPopular,
     monthlyPriceAmount,
     yearlyPriceAmount,
-  } = adminProduct;
+  } = product;
 
   const [activeValue, setActiveValue] = useState<boolean>(active);
   const [mostPopularValue, setMostPopularValue] =
@@ -182,7 +182,7 @@ const ProductForm: FC<{
                 error={featuresHasError}
                 helperText={featuresHasError && 'Features is required'}
                 disabled={isLoading}
-                placeholder="Separate features with a new line, 3 lines recommended."
+                placeholder="Separate features with a new line. Recommended for appearance: same amount of lines accross all plans."
               />
             </Grid>
           </Grid>

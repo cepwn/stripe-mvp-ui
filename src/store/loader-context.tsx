@@ -1,11 +1,11 @@
-import React, { useState, FC, ReactElement } from 'react';
+import React, { useState, FC, ReactElement, createContext } from 'react';
 
 type LoaderContextObj = {
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
 };
 
-const LoaderContext = React.createContext<LoaderContextObj>({
+const LoaderContext = createContext<LoaderContextObj>({
   isLoading: false,
   setIsLoading: () => undefined,
 });

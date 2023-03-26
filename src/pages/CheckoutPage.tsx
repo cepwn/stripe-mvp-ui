@@ -1,8 +1,8 @@
 import { FC, ReactElement } from 'react';
-import CheckoutForm from '../components/Checkout/CheckoutForm';
+import Checkout from '../components/Checkout/Checkout';
 
 const CheckoutPage: FC = (): ReactElement => {
-  return <CheckoutForm />;
+  return <Checkout />;
 };
 
 export default CheckoutPage;

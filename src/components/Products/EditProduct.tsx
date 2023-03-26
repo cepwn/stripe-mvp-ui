@@ -5,7 +5,7 @@ import { Link as RouterLink, useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AuthContext from '../../store/auth-context';
 import config from '../../config/default';
-import { AdminProduct } from './models/adminProduct';
+import { Product } from './models/product';
 import EditProductForm from './EditProductForm';
 import LoaderContext from '../../store/loader-context';
 
@@ -24,13 +24,13 @@ const EditProduct: FC<{ productId: string }> = (): ReactElement => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
 
-  const [adminProduct, setAdminProduct] = useState<AdminProduct | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
 
   // TODO: add error handling
   useEffect(() => {
     (async () => {
       loaderCtx.setIsLoading(true);
-      const adminProductReponse = await axios.get<AdminProduct>(
+      const getProductResponse = await axios.get<Product>(
         `${config.api.url}/products/${productId}`,
         {
           headers: {
@@ -38,7 +38,7 @@ const EditProduct: FC<{ productId: string }> = (): ReactElement => {
           },
         },
       );
-      setAdminProduct(adminProductReponse.data);
+      setProduct(getProductResponse.data);
       loaderCtx.setIsLoading(false);
     })();
   }, []);
@@ -72,7 +72,7 @@ const EditProduct: FC<{ productId: string }> = (): ReactElement => {
           },
         },
       );
-      history.replace('/admin/products');
+      history.push('/admin/products');
     } catch (e) {
       if (axios.isAxiosError(e)) {
         // FIXME: remove console.log
@@ -120,9 +120,9 @@ const EditProduct: FC<{ productId: string }> = (): ReactElement => {
       >
         Edit Plan
       </Typography>
-      {adminProduct ? (
+      {product ? (
         <EditProductForm
-          adminProduct={adminProduct}
+          product={product}
           onSubmit={formSubmissionHandler}
           isLoading={loaderCtx.isLoading}
         />

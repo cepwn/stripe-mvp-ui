@@ -10,13 +10,13 @@ import { FC, ReactElement, useContext, useEffect, useState } from 'react';
 import config from '../../config/default';
 import AuthContext from '../../store/auth-context';
 import LoaderContext from '../../store/loader-context';
-import { AdminProduct } from './models/adminProduct';
+import { Product } from './models/product';
 import UserProductsList from './UserProductsList';
 
 const UserProducts: FC = (): ReactElement => {
   const authCtx = useContext(AuthContext);
   const loaderCtx = useContext(LoaderContext);
-  const [adminProducts, setAdminProducts] = useState<AdminProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [intervalValue, setIntervalValue] = useState('monthly');
 
   const handleIntervalChange = (
@@ -30,7 +30,7 @@ const UserProducts: FC = (): ReactElement => {
   useEffect(() => {
     (async () => {
       loaderCtx.setIsLoading(true);
-      const adminProductsReponse = await axios.get<AdminProduct[]>(
+      const getProductsResponse = await axios.get<Product[]>(
         `${config.api.url}/products`,
         {
           headers: {
@@ -39,13 +39,11 @@ const UserProducts: FC = (): ReactElement => {
         },
       );
 
-      const activeAdminProducts = adminProductsReponse.data.filter(
-        (product) => {
-          return product.active === true;
-        },
-      );
+      const activeProducts = getProductsResponse.data.filter((product) => {
+        return product.active === true;
+      });
 
-      setAdminProducts(activeAdminProducts);
+      setProducts(activeProducts);
       loaderCtx.setIsLoading(false);
     })();
   }, []);
@@ -110,9 +108,9 @@ const UserProducts: FC = (): ReactElement => {
           </Grid>
         </Container>
       )}
-      {adminProducts.length > 0 && !loaderCtx.isLoading && (
+      {products.length > 0 && !loaderCtx.isLoading && (
         <UserProductsList
-          adminProducts={adminProducts}
+          products={products}
           intervalValue={intervalValue}
           onIntervalChange={handleIntervalChange}
         />

@@ -6,7 +6,7 @@ import axios from 'axios';
 import AuthContext from '../../store/auth-context';
 import config from '../../config/default';
 import EditProductForm from './EditProductForm';
-import { AdminProduct } from './models/adminProduct';
+import { Product } from './models/product';
 import { ProductFormOnSubmitParams } from './EditProduct';
 import LoaderContext from '../../store/loader-context';
 
@@ -43,7 +43,7 @@ const ProductForm: FC = (): ReactElement => {
           },
         },
       );
-      history.replace('/admin/products');
+      history.push('/admin/products');
     } catch (e) {
       if (axios.isAxiosError(e)) {
         // FIXME: remove console.log
@@ -68,8 +68,10 @@ const ProductForm: FC = (): ReactElement => {
     </Typography>,
   ];
 
-  const defaultAdminProduct: AdminProduct = {
+  const defaultProduct: Product = {
     id: '',
+    monthlyPriceId: '',
+    yearlyPriceId: '',
     name: '',
     features: '',
     monthlyPriceAmount: '0.00',
@@ -102,7 +104,7 @@ const ProductForm: FC = (): ReactElement => {
         Add Plan
       </Typography>
       <EditProductForm
-        adminProduct={defaultAdminProduct}
+        product={defaultProduct}
         onSubmit={formSubmissionHandler}
         isLoading={loaderCtx.isLoading}
       />

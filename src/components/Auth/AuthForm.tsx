@@ -99,7 +99,7 @@ const AuthForm: FC<{ authMode: AuthMode }> = ({ authMode }): ReactElement => {
       const { jwt: token } = await response.data;
       const remainingTimeMillis = getTokenRemainingTimeMillis(token);
       authCtx.login(token, remainingTimeMillis);
-      history.replace('/');
+      history.push('/');
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.response?.status === 401) {

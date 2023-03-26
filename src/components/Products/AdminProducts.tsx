@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FC, ReactElement, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../../store/auth-context';
-import { AdminProduct } from './models/adminProduct';
+import { Product } from './models/product';
 import config from '../../config/default';
 import LoaderContext from '../../store/loader-context';
 import AdminProductsTable from './AdminProductsTable';
@@ -11,7 +11,7 @@ import AdminProductsTable from './AdminProductsTable';
 const AdminProducts: FC = (): ReactElement => {
   const authCtx = useContext(AuthContext);
   const loaderCtx = useContext(LoaderContext);
-  const [adminProducts, setAdminProducts] = useState<AdminProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   // TODO: add error handling
   const deleteProductHandler = async (id: string) => {
@@ -22,7 +22,7 @@ const AdminProducts: FC = (): ReactElement => {
           Authorization: `Bearer ${authCtx.token}`,
         },
       });
-      setAdminProducts((prevProducts) =>
+      setProducts((prevProducts) =>
         prevProducts.filter((product) => product.id !== id),
       );
     } catch (e) {
@@ -38,7 +38,7 @@ const AdminProducts: FC = (): ReactElement => {
   useEffect(() => {
     (async () => {
       loaderCtx.setIsLoading(true);
-      const adminProductsReponse = await axios.get<AdminProduct[]>(
+      const getProductsResponse = await axios.get<Product[]>(
         `${config.api.url}/products`,
         {
           headers: {
@@ -46,7 +46,7 @@ const AdminProducts: FC = (): ReactElement => {
           },
         },
       );
-      setAdminProducts(adminProductsReponse.data);
+      setProducts(getProductsResponse.data);
       loaderCtx.setIsLoading(false);
     })();
   }, []);
@@ -101,7 +101,7 @@ const AdminProducts: FC = (): ReactElement => {
         </>
       ) : (
         <AdminProductsTable
-          adminProducts={adminProducts}
+          products={products}
           onDeleteProduct={deleteProductHandler}
         />
       )}

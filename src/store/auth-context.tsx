@@ -1,9 +1,10 @@
-import React, {
+import {
   useState,
   useEffect,
   useCallback,
   FC,
   ReactElement,
+  createContext,
 } from 'react';
 import { getTokenRemainingTimeMillis } from '../util/jwt';
 
@@ -16,7 +17,7 @@ type AuthContextObj = {
   logout: () => void;
 };
 
-const AuthContext = React.createContext<AuthContextObj>({
+const AuthContext = createContext<AuthContextObj>({
   token: '',
   isLoggedIn: false,
   login: () => undefined,
